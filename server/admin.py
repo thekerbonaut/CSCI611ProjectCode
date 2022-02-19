@@ -17,7 +17,7 @@ def admin_program():
 
     print("Welcome to the admin program")
     auth = authenticate()
-    if auth == True:
+    while auth == True:
         menu()
     else:
         print("Authentication failed")
@@ -68,7 +68,8 @@ def menu():
     elif option == 2:
         delete_user()
     elif option == 3:
-        exit()
+        print("Exiting program")
+        quit()
     else:
         print('Invalid option. Please enter a number between 1 and 3.')
 
@@ -118,10 +119,6 @@ def delete_user():
     dbconn.commit()
     print("Deleted user")
     return
-
-def exit():
-    print("Exiting...")
-    #doesn't actually exit yet, I'll fix this later
 
 if __name__ == '__main__':
     admin_program()
