@@ -36,4 +36,7 @@
 #leaving them for now
 #*.pem
 
+# Misc #
+######################
 *.code-workspace
+*.pyc
