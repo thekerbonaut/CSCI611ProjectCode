@@ -1,8 +1,8 @@
 import rsa
 
 def keygen_program():
-    PUB_KEY_DST = 'C:\\Users\\jsfot\\OneDrive\\Documents\\MSCS\\2022Spring\\611\\public.pem'
-    PRIV_KEY_DST = 'C:\\Users\\jsfot\\OneDrive\\Documents\\MSCS\\2022Spring\\611\\private.pem'
+    PUB_KEY_DST = '\\public.pem'
+    PRIV_KEY_DST = '\\private.pem'
     
     (pubkey, privkey) = rsa.newkeys(2048)
     with open(PUB_KEY_DST, 'wb+') as f:
