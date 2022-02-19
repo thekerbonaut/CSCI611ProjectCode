@@ -9,8 +9,6 @@ import sqlite3 as sql
 import hashlib
 import uuid
 
-from client.client import authenticate
-
 def admin_program():
     #start logging
     logging.basicConfig(level=logging.DEBUG, filename='admin.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
@@ -29,7 +27,7 @@ def authenticate():
     password = input("Enter Password -> ")
     #credentials = user + ',' + password
     #check user credentials
-    dbconn = sql.connect('server/users.db')
+    dbconn = sql.connect('users.db')
     dbcur = dbconn.cursor()
 
     try:
@@ -92,14 +90,16 @@ def add_user():
     print(newadmin)
     print(type(newadmin))
     #connect to database
-    dbconn = sql.connect('server/users.db')
+    dbconn = sql.connect('users.db')
     dbcur = dbconn.cursor()
     #hash password
     salt = uuid.uuid4().hex
     hashedpassword = hashlib.sha512((salt + newpassword).encode("UTF-8")).hexdigest()
     #add new user
-    add_user_sql = "INSERT INTO users VALUES ('{}','{}','{}','{}')"
-    dbconn.execute(add_user_sql.format(newuser, salt, hashedpassword, newadmin))
+    add_user_sql = "INSERT INTO users (username, salt, password, admin) VALUES (?, ?, ?, ?);"
+    new_user_data = (newuser, salt, hashedpassword, newadmin)
+    dbcur.execute(add_user_sql, new_user_data)
+    dbconn.commit()
     print("Added new user")
     return
 
