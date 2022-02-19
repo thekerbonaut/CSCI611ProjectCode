@@ -1,4 +1,5 @@
 #database code adapted from https://stackoverflow.com/questions/54267646/i-want-to-use-json-in-python-to-save-users-and-password/54268080
+# and https://pynative.com/python-sqlite-insert-into-table/
 #logging code adapted from https://realpython.com/python-logging/
 #menu code adapted from https://computinglearner.com/how-to-create-a-menu-for-a-python-console-application/
 
@@ -23,9 +24,7 @@ def admin_program():
 
 def authenticate():
     #get user credentials
-    user = input("Enter Username -> ")
-    password = input("Enter Password -> ")
-    #credentials = user + ',' + password
+    user, password = get_credentials()
     #check user credentials
     dbconn = sql.connect('users.db')
     dbcur = dbconn.cursor()
@@ -57,7 +56,8 @@ def menu():
     #display menu
     menu_options = {
         1: 'Add user',
-        2: 'Exit'
+        2: 'Delete user',
+        3: 'Exit'
     }
     for key in menu_options.keys():
         print (key, '--', menu_options[key] )
@@ -66,13 +66,19 @@ def menu():
     if option == 1:
         add_user()
     elif option == 2:
+        delete_user()
+    elif option == 3:
         exit()
     else:
-        print('Invalid option. Please enter a number between 1 and 2.')
+        print('Invalid option. Please enter a number between 1 and 3.')
+
+def get_credentials():
+    user = input("Enter Username -> ")
+    password = input("Enter Password -> ")
+    return user, password
 
 def add_user():
-    newuser = input("Enter Username -> ")
-    newpassword = input("Enter Password -> ")
+    newuser, newpassword = get_credentials()
     newadmin = ''
     print("Add to admin list?")
     admin_options = {
@@ -87,8 +93,6 @@ def add_user():
     else:
         print('Invalid option')
         menu()
-    print(newadmin)
-    print(type(newadmin))
     #connect to database
     dbconn = sql.connect('users.db')
     dbcur = dbconn.cursor()
@@ -101,6 +105,18 @@ def add_user():
     dbcur.execute(add_user_sql, new_user_data)
     dbconn.commit()
     print("Added new user")
+    return
+
+def delete_user():
+    user = input("Enter Username -> ")
+    #connect to database
+    dbconn = sql.connect('users.db')
+    dbcur = dbconn.cursor()
+    #delete user
+    delete_user_sql = "DELETE FROM users WHERE username = ?"
+    dbcur.execute(delete_user_sql, (user,))
+    dbconn.commit()
+    print("Deleted user")
     return
 
 def exit():
