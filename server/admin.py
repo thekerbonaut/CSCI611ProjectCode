@@ -57,7 +57,8 @@ def menu():
     menu_options = {
         1: 'Add user',
         2: 'Delete user',
-        3: 'Exit'
+        3: 'Change password',
+        4: 'Exit'
     }
     for key in menu_options.keys():
         print (key, '--', menu_options[key] )
@@ -68,10 +69,12 @@ def menu():
     elif option == 2:
         delete_user()
     elif option == 3:
+        change_password()
+    elif option == 4:
         print("Exiting program")
         quit()
     else:
-        print('Invalid option. Please enter a number between 1 and 3.')
+        print('Invalid option. Please enter a number between 1 and 4.')
 
 def get_credentials():
     user = input("Enter Username -> ")
@@ -118,6 +121,23 @@ def delete_user():
     dbcur.execute(delete_user_sql, (user,))
     dbconn.commit()
     print("Deleted user")
+    return
+
+def change_password():
+    user = input("Enter Username -> ")
+    newpassword = input("Enter New Password -> ")
+    #connect to database
+    dbconn = sql.connect('users.db')
+    dbcur = dbconn.cursor()
+    #hash password
+    salt = uuid.uuid4().hex
+    hashedpassword = hashlib.sha512((salt + newpassword).encode("UTF-8")).hexdigest()
+    #change password
+    change_user_sql = "UPDATE users SET salt = ?, password = ? WHERE username = ?"
+    data = (salt, hashedpassword, user)
+    dbcur.execute(change_user_sql, data)
+    dbconn.commit()
+    print("Password updated")
     return
 
 if __name__ == '__main__':
