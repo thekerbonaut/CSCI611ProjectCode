@@ -1,0 +1,6 @@
+###### Requirements without Version Specifiers ######
+rsa
+cryptography
+sqlite3
+hashlib
+uuid
