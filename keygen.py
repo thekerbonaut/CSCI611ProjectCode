@@ -1,5 +1,6 @@
 import rsa
 
+#keygen function has been tested
 def keygen_program():
     SERVER_PUB_KEY_DST = 'client\\serverpublic.pem'
     SERVER_PRIV_KEY_DST = 'server\\serverprivate.pem'
@@ -23,4 +24,14 @@ def keygen_program():
         f.write(pk)
 
 if __name__ == '__main__':
-    keygen_program()
+    #Menu code is untested
+    option = input("WARNING: This action will overwrite existing keys! Proceed (Y/n): ")
+
+    if option == 'y' or option == 'Y':
+        print("Generating new keys")
+        keygen_program()
+    elif option == 'n' or option == 'N':
+        print("Exiting program")
+        quit()
+    else:
+        print('Invalid option.')
