@@ -6,6 +6,7 @@ import logging
 import sqlite3 as sql
 import hashlib
 import uuid
+from datetime import datetime
 
 #This class contains connection information
 class Connection:
@@ -36,12 +37,12 @@ class Connection:
 
 def server_program():
     #start logging
-    logging.basicConfig(level=logging.DEBUG, filename='server.log', filemode='w', format='%(name)s - %(levelname)s - %(message)s')
-    logging.info("Server program started")
+    logging.basicConfig(level=logging.DEBUG, filename='logs/server.log', filemode='a', format='%(name)s - %(levelname)s - %(message)s')
+    logging.info(str(datetime.now()) + " Server program started")
 
     connection.server_socket.listen(2)
     connection.conn, connection.address = connection.server_socket.accept()
-    logging.info("Connection from: " + str(connection.address)) 
+    logging.info(str(datetime.now()) + " Connection from: " + str(connection.address)) 
     print("Connection from: " + str(connection.address))
     connection.auth = authenticate(decrypt_message(connection.conn.recv(1024)))
     while connection.auth == True:
@@ -71,7 +72,7 @@ def authenticate(creds):
         salt, hashpass, admin = row  # Unpacking the row information - btw this would fail if the username didn't exist
     except:
         print("Username not found")
-        logging.info("Failed login, user: " + user)
+        logging.info(str(datetime.now()) + " Failed login, user: " + user)
         return False
 
     hashedIncomingPwd = hashlib.sha512((salt + password).encode("UTF-8")).hexdigest()
@@ -81,17 +82,17 @@ def authenticate(creds):
         # its just there for use in a server adminstration program that I wrote seperately
         if admin == True:
             print("logged in as admin")
-            logging.info("Successful login, user: " + user)
+            logging.info(str(datetime.now()) + " Successful login, user: " + user)
             send_message(connection.key)
             return True
         else:
             print("logged in as user")
             send_message(connection.key)
-            logging.info('Successful login, user: ' + user)
+            logging.info(str(datetime.now()) + ' Successful login, user: ' + user)
             return True
     else:
         print("incorrect password")
-        logging.warning("Incorrect password, user: " + user)
+        logging.warning(str(datetime.now()) + " Incorrect password, user: " + user)
         return False
 
 def encrypt_message(m):
